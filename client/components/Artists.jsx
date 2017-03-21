@@ -40,7 +40,6 @@ var Artists = React.createClass({
 			xmlHTTP.open('GET', 'https://api.spotify.com/v1/search?type=artist&q=' + this.state.artistQuery, true);
 			xmlHTTP.onreadystatechange = function () {
 				if (xmlHTTP.readyState == 4 && xmlHTTP.status == 200) {
-					console.info(JSON.parse(xmlHTTP.responseText).artists.items);
 					self.setState({ results: JSON.parse(xmlHTTP.responseText).artists.items });
 				}
 			}

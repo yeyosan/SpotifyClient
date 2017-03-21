@@ -1,11 +1,12 @@
 var React = require('react');
-var Router = require('react-router-dom').Router;
+var Router = require('react-router-dom').BrowserRouter;
 var Route = require('react-router-dom').Route;
 var Link = require('react-router-dom').Link;
 var createBrowserHistory = require('history').createBrowserHistory;
 
 var Index = require('./Index.jsx');
 var Artists = require('./Artists.jsx');
+var Artist = require('./Artist.jsx');
 var Albums = require('./Albums.jsx');
 var Tracks = require('./Tracks.jsx');
 
@@ -16,9 +17,9 @@ var App = React.createClass({
 				<div>
 					<nav>
 						<ul>
-							<li><Link to="artists">Artists</Link></li>
-							<li><Link to="albums">Albums</Link></li>
-							<li><Link to="tracks">Tracks</Link></li>
+							<li><Link to="/artists">Artists</Link></li>
+							<li><Link to="/albums">Albums</Link></li>
+							<li><Link to="/tracks">Tracks</Link></li>
 						</ul>
 						<hr />
 					</nav>
@@ -42,7 +43,8 @@ var App = React.createClass({
 							</table>
 						</aside>
 						<Route path="/" exact component={Index} />
-						<Route path="/artists" component={Artists} />
+						<Route path="/artists" exact component={Artists} />
+						<Route path="/artists/:id" component={Artist} />
 						<Route path="/albums" component={Albums} />
 						<Route path="/tracks" component={Tracks} />
 					</div>
