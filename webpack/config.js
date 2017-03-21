@@ -1,5 +1,5 @@
-const path = require('path');
-//const webpack = require('webpack');
+var path = require('path');
+var webpack = require('webpack');
 
 module.exports = {
   entry: [
@@ -17,7 +17,7 @@ module.exports = {
       // take all less files, compile them, and bundle them in with our js bundle
       //{ test: /\.less$/, loader: 'style!css!autoprefixer?browsers=last 2 version!less' },
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
@@ -35,11 +35,11 @@ module.exports = {
     }),
     // optimizations
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false,
       },
     }),
-  ],*/
+  ]*/
 };

@@ -29,22 +29,31 @@ router.get('/callback', function (request, response) {
 	var state = request.query.state;
 	var storedState = request.cookies ? request.cookies[STATE_KEY] : null;
 
+	console.info('Comming into callback...');
+
 	if (state === null || state !== storedState) {
-		response.send('state mismatch');
+		console.info('mismatch');
+		response.redirect('/#/error/state mismatch');
 	}
 	else {
+		console.info('match!');
 		response.clearCookie(STATE_KEY);
 
 		spotifyApi.authorizationCodeGrant(code).then(function (data) {
-			spotifyApi.setAccessToken(data.body.access_token);
-			spotifyApi.setRefreshToken(data.body.refresh_token);
+			var access_token = data.body.access_token;
+			var refresh_token = data.body.refresh_token;
+
+			spotifyApi.setAccessToken(access_token);
+			spotifyApi.setRefreshToken(refresh_token);
 
 			spotifyApi.getMe().then(function (myInfo) {
-				response.send(myInfo.body);
+				console.info(myInfo);
 			});
+
+			response.redirect('/?' + access_token + '&' + refresh_token);
 		}).catch(function (err) {
-			response.send('invalid token');
 			console.error('error', err);
+			response.redirect('/#/error/invalid token');
 		});
 	}
 });
