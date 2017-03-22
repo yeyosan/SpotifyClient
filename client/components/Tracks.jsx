@@ -40,7 +40,7 @@ var Tracks = React.createClass({
 			xmlHTTP.open('GET', 'https://api.spotify.com/v1/search?type=track&q=' + this.state.trackQuery, true);
 			xmlHTTP.onreadystatechange = function () {
 				if (xmlHTTP.readyState == 4 && xmlHTTP.status == 200) {
-					console.info(JSON.parse(xmlHTTP.responseText).tracks.items);
+					console.info('tracks: ', JSON.parse(xmlHTTP.responseText).tracks.items);
 					self.setState({ results: JSON.parse(xmlHTTP.responseText).tracks.items });
 				}
 			}

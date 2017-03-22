@@ -40,7 +40,6 @@ var Albums = React.createClass({
 			xmlHTTP.open('GET', 'https://api.spotify.com/v1/search?type=album&q=' + this.state.albumQuery, true);
 			xmlHTTP.onreadystatechange = function () {
 				if (xmlHTTP.readyState == 4 && xmlHTTP.status == 200) {
-					console.info(JSON.parse(xmlHTTP.responseText).albums.items);
 					self.setState({ results: JSON.parse(xmlHTTP.responseText).albums.items });
 				}
 			}

@@ -8,6 +8,7 @@ var Index = require('./Index.jsx');
 var Artists = require('./Artists.jsx');
 var Artist = require('./Artist.jsx');
 var Albums = require('./Albums.jsx');
+var Album = require('./Album.jsx');
 var Tracks = require('./Tracks.jsx');
 
 var App = React.createClass({
@@ -45,7 +46,8 @@ var App = React.createClass({
 						<Route path="/" exact component={Index} />
 						<Route path="/artists" exact component={Artists} />
 						<Route path="/artists/:id" component={Artist} />
-						<Route path="/albums" component={Albums} />
+						<Route path="/albums" exact component={Albums} />
+						<Route path="/albums/:id" component={Album} />
 						<Route path="/tracks" component={Tracks} />
 					</div>
 				</div>

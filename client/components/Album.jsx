@@ -2,11 +2,11 @@ var React = require('react');
 
 var Results = require('./Results.jsx');
 
-var Artist = React.createClass({
+var Album = React.createClass({
 	titleStyle: {},
 	getInitialState: function () {
 		return {
-			artist: {},
+			album: {},
 			data: [],
 			loading: true
 		}
@@ -15,25 +15,25 @@ var Artist = React.createClass({
 		var self = this;
 		var xmlHTTP = new XMLHttpRequest();
 
-		xmlHTTP.open('GET', 'https://api.spotify.com/v1/artists/' + self.props.match.params.id, true);
+		xmlHTTP.open('GET', 'https://api.spotify.com/v1/albums/' + self.props.match.params.id, true);
 		xmlHTTP.onreadystatechange = function () {
 			if (xmlHTTP.readyState == 4 && xmlHTTP.status == 200) {
-				var artist = JSON.parse(xmlHTTP.responseText);
+				var album = JSON.parse(xmlHTTP.responseText);
 				var xmlHTTPdata = new XMLHttpRequest();
 				
-				if (artist.images.length > 0) {
+				if (album.images.length > 0) {
 					self.titleStyle = {
-						background: 'url(' + artist.images[0].url + ') no-repeat left center',
+						background: 'url(' + album.images[0].url + ') no-repeat',
 						backgroundSize: 'contain',
 						paddingLeft: '1.5em'
 					};
 				}
 
-				xmlHTTPdata.open('GET', 'https://api.spotify.com/v1/artists/' + self.props.match.params.id + '/albums', true);
+				xmlHTTPdata.open('GET', 'https://api.spotify.com/v1/albums/' + self.props.match.params.id + '/tracks', true);
 				xmlHTTPdata.onreadystatechange = function () {
 					if (xmlHTTPdata.readyState == 4 && xmlHTTPdata.status == 200) {
 						self.setState({
-							artist: artist,
+							album: album,
 							data: JSON.parse(xmlHTTPdata.responseText).items,
 							loading: false
 						});
@@ -53,12 +53,12 @@ var Artist = React.createClass({
 		else {
 			return (
 				<div className="content">
-					<h2 style={this.titleStyle}>{this.state.artist.name} - Albums</h2>
-					<Results results={this.state.data} type="albums" />
+					<h2 style={this.titleStyle}>{this.state.album.name} ({this.state.album.artists[0].name}) - Tracks</h2>
+					<Results results={this.state.data} type="tracks" />
 				</div>
 			);
 		}
 	}
 });
 
-module.exports = Artist;
+module.exports = Album;

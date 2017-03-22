@@ -1,8 +1,8 @@
 var React = require('react');
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 var Query = require('./Query.jsx');
 var Results = require('./Results.jsx');
-var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 var Artists = React.createClass({
 	getInitialState: function () {
