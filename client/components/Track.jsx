@@ -12,7 +12,7 @@ var Track = React.createClass({
 	renderPlayer: function () {
 		return (
 			<div>
-				<audio src={this.props.trackData.preview_url} controls autoplay>
+				<audio src={this.props.trackData.preview_url} controls autoPlay>
 					Your browser does not support AUDIO tag
 				</audio>
 			</div>

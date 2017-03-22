@@ -21,6 +21,11 @@ figure {
 	padding: 0;
 }
 
+table {
+	text-align: left;
+	width: 100%;
+}
+
 h2 {
 	color: #7C25F8;
 	margin: 0;
@@ -93,7 +98,8 @@ li figure:hover figcaption {
 	white-space: normal;
 }
 
-.login {
+.login,
+.logout {
 	background-image: linear-gradient(#8025CC, #AA36AE);
 	border-radius: 5px;
 	color: #FFF;
@@ -104,7 +110,9 @@ li figure:hover figcaption {
 }
 
 .login:focus,
-.login:hover {
+.login:hover,
+.logout:focus,
+.logout:hover {
 	background-image: linear-gradient(#8F34DB, #B945BD);
 }
 

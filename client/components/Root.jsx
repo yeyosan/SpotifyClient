@@ -7,41 +7,59 @@ var App = require('./App.jsx');
 var Root = React.createClass({
 	getInitialState: function () {
 		return {
+			accessToken: null,
+			country: null,
+			email: null,
 			error: false,
 			loading: true,
-			user: null,
-			email: null,
-			country: null,
-			images: []
+			user: null
 		}
 	},
 	componentDidMount: function () {
-		if (window.location.search.length > 0) {
-			var params = window.location.search.substr(1).split('&');
-			var self = this;
-			var spotifyApi = new Spotify();
-			
-			spotifyApi.setAccessToken(params[0]);
-			spotifyApi.getMe()
-				.then(function (data) {
-					self.setState({
-						loading: false,
-						user: data.id,
-						email: data.email,
-						country: data.country,
-						images: data.images
-					});
-				})
-				.catch(function (err) {
-					self.setState({
-						error: true,
-						loading: false
-					})
-				});
-		}
+		var self = this;
+		var spotifyApi = new Spotify();
+		var xmlHTTP = new XMLHttpRequest();
+
+		xmlHTTP.open('GET', '/getAccessToken', true);
+		xmlHTTP.onreadystatechange = function () {
+			if (xmlHTTP.readyState == 4 && xmlHTTP.status == 200) {
+				var accessToken = JSON.parse(xmlHTTP.responseText).accessToken;
+				console.log('accessToken: ', accessToken);
+				if (accessToken !== null) {
+					spotifyApi.setAccessToken(accessToken);
+					spotifyApi.getMe()
+						.then(function (data) {
+							self.setState({
+								accessToken:  accessToken,
+								country: data.country,
+								email: data.email,
+								loading: false,
+								user: data.id,
+							});
+						})
+						.catch(function (err) {
+							self.setState({
+								error: true,
+								loading: false
+							})
+						});
+				}
+				else {
+					self.setState({ loading: false });
+				}
+			}
+		};
+		xmlHTTP.send(null);
 	},
 	render: function () {
-		return (window.location.search.length > 0) ? this.renderLogged() : this.renderLogin();
+		if (this.state.loading) {
+			return (
+				<h2 className="loading">Loading...</h2>
+			);
+		}
+		else {
+			return (this.state.accessToken !== null) ? this.renderLogged() : this.renderLogin();
+		}
 	},
 	renderLogin: function () {
 		return (
@@ -49,22 +67,15 @@ var Root = React.createClass({
 		);
 	},
 	renderLogged: function () {
-		if (this.state.loading) {
+		if (this.setState.error) {
 			return (
-				<h2 className="loading">Loading...</h2>
-			);
+				<h2 className="error">Error</h2>
+			)
 		}
 		else {
-			if (this.setState.error) {
-				return (
-					<h2 className="error">Error</h2>
-				)
-			}
-			else {
-				return (
-					<App user={this.state.user} email={this.state.email} country={this.state.country} />
-				);
-			}
+			return (
+				<App user={this.state.user} email={this.state.email} country={this.state.country} />
+			);
 		}
 	}
 });

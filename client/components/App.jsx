@@ -42,6 +42,7 @@ var App = React.createClass({
 									</tr>
 								</tbody>
 							</table>
+							<a className="logout" href="/logout">Logout</a>
 						</aside>
 						<Route path="/" exact component={Index} />
 						<Route path="/artists" exact component={Artists} />
