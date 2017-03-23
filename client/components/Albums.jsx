@@ -5,10 +5,15 @@ var Query = require('./Query.jsx');
 var Results = require('./Results.jsx');
 
 var Albums = React.createClass({
+	limit: 9,
 	getInitialState: function () {
 		return {
-			albumQuery: '',
-			results: []
+			nextQuery: null,
+			previousQuery: null,
+			query: '',
+			results: [],
+			startAt: null,
+			total: null
 		};
 	},
 	render: function () {
@@ -22,29 +27,57 @@ var Albums = React.createClass({
 				<div className="content">
 					<h2>Albums!</h2>
 					<Query title="Album" onChange={this.handlerChange} onSubmit={this.handlerSubmit} />
-					{this.state.results.length > 0 ? <Results results={this.state.results} type="albums" /> : <span>No hay resultados</span>}
+					{
+						this.state.results.length > 0 ?
+						<Results
+							limit={this.limit}
+							nextResults={this.state.nextQuery}
+							previousResults={this.state.previousQuery}
+							refreshResults={this.updateQuery}
+							results={this.state.results}
+							startAt={this.state.startAt}
+							totalResults={this.state.total}
+							type="albums" /> :
+						<span>No hay resultados</span>
+					}
 				</div>
 			</ReactCSSTransitionGroup>
 		);
 	},
 	handlerChange: function (ev) {
-		this.setState({
-			albumQuery: ev.target.value
-		})
+		if (ev.target.value.length > 0) {
+			this.setState({
+				query: 'https://api.spotify.com/v1/search?type=album&offset=0&limit=' + this.limit + '&q=' + ev.target.value
+			})
+		}
+		else {
+			this.setState({ query: '' });
+		}
 	},
 	handlerSubmit: function () {
-		if (this.state.albumQuery.length) {
+		if (this.state.query.length) {
 			var self = this;
 			var xmlHTTP = new XMLHttpRequest();
 
-			xmlHTTP.open('GET', 'https://api.spotify.com/v1/search?type=album&q=' + this.state.albumQuery, true);
+			xmlHTTP.open('GET', self.state.query, true);
 			xmlHTTP.onreadystatechange = function () {
 				if (xmlHTTP.readyState == 4 && xmlHTTP.status == 200) {
-					self.setState({ results: JSON.parse(xmlHTTP.responseText).albums.items });
+					var albums = JSON.parse(xmlHTTP.responseText).albums;
+
+					self.setState({
+						nextQuery: albums.next,
+						previousQuery: albums.previous,
+						results: albums.items,
+						startAt: albums.offset,
+						total: albums.total
+					});
 				}
 			}
 			xmlHTTP.send(null);
 		}
+	},
+	updateQuery: function (newQuery) {
+		this.setState({ query: newQuery }, this.handlerSubmit);
 	}
 });
 

@@ -24,7 +24,7 @@ var Root = React.createClass({
 		xmlHTTP.onreadystatechange = function () {
 			if (xmlHTTP.readyState == 4 && xmlHTTP.status == 200) {
 				var accessToken = JSON.parse(xmlHTTP.responseText).accessToken;
-				console.log('accessToken: ', accessToken);
+				
 				if (accessToken !== null) {
 					spotifyApi.setAccessToken(accessToken);
 					spotifyApi.getMe()

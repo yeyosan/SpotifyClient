@@ -3,12 +3,18 @@ var React = require('react');
 var Results = require('./Results.jsx');
 
 var Album = React.createClass({
+	limit: 20,
 	titleStyle: {},
 	getInitialState: function () {
 		return {
 			album: {},
-			data: [],
-			loading: true
+			loading: true,
+			nextQuery: null,
+			previousQuery: null,
+			query: 'https://api.spotify.com/v1/albums/' + this.props.match.params.id + '/tracks?limit=' + this.limit,
+			results: [],
+			startAt: null,
+			total: null
 		}
 	},
 	componentDidMount: function () {
@@ -29,12 +35,12 @@ var Album = React.createClass({
 					};
 				}
 
-				xmlHTTPdata.open('GET', 'https://api.spotify.com/v1/albums/' + self.props.match.params.id + '/tracks', true);
+				xmlHTTPdata.open('GET', self.state.query, true);
 				xmlHTTPdata.onreadystatechange = function () {
 					if (xmlHTTPdata.readyState == 4 && xmlHTTPdata.status == 200) {
 						self.setState({
 							album: album,
-							data: JSON.parse(xmlHTTPdata.responseText).items,
+							results: JSON.parse(xmlHTTPdata.responseText).items,
 							loading: false
 						});
 					}
@@ -54,7 +60,7 @@ var Album = React.createClass({
 			return (
 				<div className="content">
 					<h2 style={this.titleStyle}>{this.state.album.name} ({this.state.album.artists[0].name}) - Tracks</h2>
-					<Results results={this.state.data} type="tracks" />
+					<Results results={this.state.results} type="tracks" />
 				</div>
 			);
 		}

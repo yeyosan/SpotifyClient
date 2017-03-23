@@ -126,7 +126,26 @@ li figure:hover figcaption {
 
 .content {
 	left: 20%;
+	overflow: auto;
 	width: 80%;
+}
+
+.navigation {
+	margin-bottom: 10px;
+}
+
+.navigation li {
+	display: inline-block;
+	font-size: 12px;
+	margin: 0 10px;
+}
+
+.navigation li a {
+	background-color: #00C;
+	border-radius: 11px;
+	color: #FFF;
+	cursor: pointer;
+	padding: 5px 10px;
 }
 
 .grid li {

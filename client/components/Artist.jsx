@@ -3,12 +3,18 @@ var React = require('react');
 var Results = require('./Results.jsx');
 
 var Artist = React.createClass({
+	limit: 9,
 	titleStyle: {},
 	getInitialState: function () {
 		return {
 			artist: {},
-			data: [],
-			loading: true
+			loading: true,
+			nextQuery: null,
+			previousQuery: null,
+			query: 'https://api.spotify.com/v1/artists/' + this.props.match.params.id + '/albums?limit=' + this.limit,
+			results: [],
+			startAt: null,
+			total: null
 		}
 	},
 	componentDidMount: function () {
@@ -29,13 +35,19 @@ var Artist = React.createClass({
 					};
 				}
 
-				xmlHTTPdata.open('GET', 'https://api.spotify.com/v1/artists/' + self.props.match.params.id + '/albums', true);
+				xmlHTTPdata.open('GET', self.state.query, true);
 				xmlHTTPdata.onreadystatechange = function () {
 					if (xmlHTTPdata.readyState == 4 && xmlHTTPdata.status == 200) {
+						var albums = JSON.parse(xmlHTTPdata.responseText);
+
 						self.setState({
 							artist: artist,
-							data: JSON.parse(xmlHTTPdata.responseText).items,
-							loading: false
+							loading: false,
+							nextQuery: albums.next,
+							previousQuery: albums.previous,
+							results: albums.items,
+							startAt: albums.offset,
+							total: albums.total
 						});
 					}
 				};
@@ -54,10 +66,21 @@ var Artist = React.createClass({
 			return (
 				<div className="content">
 					<h2 style={this.titleStyle}>{this.state.artist.name} - Albums</h2>
-					<Results results={this.state.data} type="albums" />
+					<Results
+						limit={this.limit}
+						nextResults={this.state.nextQuery}
+						previousResults={this.state.previousQuery}
+						refreshResults={this.updateQuery}
+						results={this.state.results}
+						startAt={this.state.startAt}
+						totalResults={this.state.total}
+						type="albums" />
 				</div>
 			);
 		}
+	},
+	updateQuery: function (newQuery) {
+		this.setState({ query: newQuery }, this.componentDidMount);
 	}
 });
 

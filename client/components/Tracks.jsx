@@ -5,10 +5,15 @@ var Query = require('./Query.jsx');
 var Results = require('./Results.jsx');
 
 var Tracks = React.createClass({
+	limit: 20,
 	getInitialState: function () {
 		return {
-			trackQuery: '',
-			results: []
+			nextQuery: null,
+			previousQuery: null,
+			query: '',
+			results: [],
+			startAt: null,
+			total: null
 		};
 	},
 	render: function () {
@@ -22,30 +27,57 @@ var Tracks = React.createClass({
 				<div className="content">
 					<h2>Tracks!</h2>
 					<Query title="Track" onChange={this.handlerChange} onSubmit={this.handlerSubmit} />
-					{this.state.results.length > 0 ? <Results results={this.state.results} type="tracks"/> : <span>No hay resultados</span>}
+					{
+						this.state.results.length > 0 ?
+						<Results
+							limit={this.limit}
+							nextResults={this.state.nextQuery}
+							previousResults={this.state.previousQuery}
+							refreshResults={this.updateQuery}
+							results={this.state.results}
+							startAt={this.state.startAt}
+							totalResults={this.state.total}
+							type="tracks"/> :
+						<span>No hay resultados</span>
+					}
 				</div>
 			</ReactCSSTransitionGroup>
 		);
 	},
 	handlerChange: function (ev) {
-		this.setState({
-			trackQuery: ev.target.value
-		})
+		if (ev.target.value.length > 0) {
+			this.setState({
+				query: 'https://api.spotify.com/v1/search?type=track&offset=0&limit=' + this.limit + '&q=' + ev.target.value
+			})
+		}
+		else {
+			this.setState({ query: '' });
+		}
 	},
 	handlerSubmit: function () {
-		if (this.state.trackQuery.length) {
+		if (this.state.query.length) {
 			var self = this;
 			var xmlHTTP = new XMLHttpRequest();
 
-			xmlHTTP.open('GET', 'https://api.spotify.com/v1/search?type=track&q=' + this.state.trackQuery, true);
+			xmlHTTP.open('GET', self.state.query, true);
 			xmlHTTP.onreadystatechange = function () {
 				if (xmlHTTP.readyState == 4 && xmlHTTP.status == 200) {
-					console.info('tracks: ', JSON.parse(xmlHTTP.responseText).tracks.items);
-					self.setState({ results: JSON.parse(xmlHTTP.responseText).tracks.items });
+					var tracks = JSON.parse(xmlHTTP.responseText).tracks;
+					
+					self.setState({
+						nextQuery: tracks.next,
+						previousQuery: tracks.previous,
+						results: tracks.items,
+						startAt: tracks.offset,
+						total: tracks.total
+					});
 				}
 			}
 			xmlHTTP.send(null);
 		}
+	},
+	updateQuery: function (newQuery) {
+		this.setState({ query: newQuery }, this.handlerSubmit);
 	}
 });
 
