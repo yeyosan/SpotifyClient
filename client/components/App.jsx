@@ -5,11 +5,11 @@ var Link = require('react-router-dom').Link;
 var createBrowserHistory = require('history').createBrowserHistory;
 
 var Index = require('./Index.jsx');
-var Artists = require('./Artists.jsx');
-var Artist = require('./Artist.jsx');
-var Albums = require('./Albums.jsx');
-var Album = require('./Album.jsx');
-var Tracks = require('./Tracks.jsx');
+var Artists = require('./Search/Artists.jsx');
+var Artist = require('./Search/Artist.jsx');
+var Albums = require('./Search/Albums.jsx');
+var Album = require('./Search/Album.jsx');
+var Tracks = require('./Search/Tracks.jsx');
 
 var App = React.createClass({
 	render: function () {
