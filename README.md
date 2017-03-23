@@ -10,4 +10,3 @@ React client for Spotify
 ## Notes
 
 - You may need to change the environment vars in 'package.json' with your Spotify credentials.
-- If you are patient enough, this client will containt React development.
